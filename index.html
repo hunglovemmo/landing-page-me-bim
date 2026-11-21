@@ -240,6 +240,13 @@ form.addEventListener('submit', async (event) => {
     if (!response.ok) throw new Error('Could not save registration');
     const result = await response.json();
     if (result.code === 'PHONE_ALREADY_REGISTERED') {
+      if (typeof result.paymentToken === 'string') {
+        sessionStorage.setItem('landingRegistration', JSON.stringify({
+          name, phone: normalizedPhone, requestId: result.paymentToken
+        }));
+      } else {
+        sessionStorage.removeItem('landingRegistration');
+      }
       signupStatus.textContent = 'Số điện thoại này đã được đăng ký.';
       showDuplicateOffer();
       return;
